@@ -1,0 +1,113 @@
+---
+title: "Analysis Report"
+date: today
+author: "Matías Castillo-Aguilar"
+bibliography: "ref.bib"
+format: html
+execute: 
+  message: false
+  echo: false
+  warning: false
+  error: false
+editor_options: 
+  chunk_output_type: inline
+---
+
+## Statistical Analyses
+
+The effect of the high sensorial processing on anxiety symptoms was assessed through an univariate Bayesian hierarchical generalized linear model. Then, a multivariate model of similar characteristics was fit, by estimating the effect of anxiety symptoms on HRV indices in a single model. For this last model, a second version of it was built considering additionally, the effect of high sensorial processing on the global effect. This approach allowed us to evaluate the mediating effect of sensorial processing of anxiety symtoms on cardiac autonomic modulation. 
+
+By having two measurements of the same variables for each individual, we adjusted for the influence of seasonality on the main effects observed, considering the within-subjects correlation among measurements by adding a random intercept of each subject. Thus, facilitating a robust estimation of model parameters and the study main effects. This model is parametrized as:
+
+$$
+\begin{aligned}
+Y_i &\sim \mathcal{N}(\mu_i + b_i, \sigma^2) \\
+\mu_i &= \beta_0 + \sum_{j = 1}^{p}{x_{ij} \beta_j}
+\end{aligned}
+$$
+
+Where $Y_i$ are the model predictors for each subject $i$, which in the case of the first model is the anxiety symptoms and in the other models, correspond to a column vector of HRV indices for the multivariable model. $\mu_i$ and $\sigma^2$ is the mean and variance of the normal distribution from which is assumed the response is distributed. $b_i$ is the subject-specific deviation from the overall mean of the distribution. The distributional parameter $\mu_i$ is assumed to be a linear combination of a global intercept $\beta_0$ and the corresponding linear predictors $\beta_j$ for all parameters $p$.
+
+To enhance the exploration of the space parameter, response and predictor variables were standardized, so they were centered over 0 with the same scale. This transformation allowed us a clear interpretation of effect sizes in terms of standard deviation-units, favoring the assessment of effects between predictor variables.
+
+## Priors and Hyperparameters
+
+For the linear coefficients, priors with a regularization effect were chosen for the main linear effects $\beta_{j}$ and the standard deviation of the subject intercept $b_i$, with the form $\beta_j,b_i \sim \mathcal{N}(0,3)$. Thus, limiting the effect of influential observations and contributing with model convergence.
+
+For parameter estimation, the No-U-Turns (NUTS) sampler from the Hamiltonian Monte Carlo (HMC) algorithm was used. The R packages, *brms* (v2.21.0) and *rstan* (v2.32.6), were used as a modeling interface to specify and compile models. The algorithm parameters used were 4 chains, each with 2500 burn-in iterations and then 2500 effective iterations per chain (10 thousand iterations in total).
+
+## Reporting model parameters
+
+Following the **S**equential **E**ffect e**X**istence and s**I**gnificance **T**esting (SEXIT) framework to describe parameter effects from Bayesian models [@makowski2019indices], median and 95% credible intervals (CI~95%~) with high density interval were reported a measures of centrality and uncertainty. The probability of direction (pd) as a measure of effect existence. The proportion of the posterior distribution that falls outside the range of practical equivallence (ROPE) on the side of the sign, as a measure of practical significance (ps), estimated as a 0.1 standard deviations. As a measure of absolute evidence in favor or against the null hypothesis, we used the Bayes Factor (BF~10~) using the Savage-Dickey density ratio against the point null, assessing if this value has become more or less likely given the observed data [@heck2019caveat].
+
+For the interpretation of BF we considered: BF = 1, no evidence; 1 < BF <= 3, anecdotal; 3 < BF <= 10, moderate; 10 < BF <= 30, strong; 30 < BF <= 100, very strong; and BF > 100, extreme evidence [@jeffreys1998theory]. For the proportion of the posterior distribution in the ROPE we considered: < 1%, significant; < 2,5%, probably significant; ≤ 97,5% & ≥ 2,5%, undecided significance; > 97,5%, probably insignificant; > 99%, insignificant [@makowski2019indices]. 
+
+## Convergence
+
+The convergence and stability of the bayesian sampling was assessed with Gelman-Rubin R-hat index, which should be lower than 1.01 [@vehtari2019rank], the effective sample size (ESS), wich should be superior to 1000 [@brms], next the visual inspection of traceplots and posterior predictive checks. All statistical analyses were computed and implemented using the R statistical language [@rlanguage].
+
+La convergencia y estabilidad del muestreo bayesiano se ha evaluado mediante R-hat, que debe ser inferior a 1,01 [@vehtari2019rank], el tamaño efectivo de la muestra (ESS), que debe ser superior a 1000 [@brms], y la inspección visual de los traceplots y las comprobaciones predictivas posteriores. Todos los análisis estadísticos se calcularon e implementaron en el lenguaje de programación R [@rlanguage].
+
+# Results
+
+<!---- SAMPLE CHARACTERISTICS ---->
+```{r}
+library(data.table)
+library(gtsummary)
+source("../R/_functions.R")
+load("../data/pas_data.RData")
+```
+
+## Sample characteristics
+
+The sample, composed of 124 subjects (age, 71.1 ± 6.1 years old), with 39 males and 85 females. The rest of the sample characteristics can be seen in table 1.
+
+```{r}
+gtsummary::tbl_summary(pas_data[, -c("id")], by = trial_phase, missing = "no",
+                       statistic = list(all_continuous() ~ "{mean} ± {sd}"))
+```
+Table 1. Sample characteristics.
+
+
+<!---- EFFECT OF HSPS ON BAI ---->
+
+## High Sensitivity and Anxiety
+
+Initially, we observed that the score of the High Sensitive Person Scale is associated with an increased score in the Beck Anxiety Inventory, observing that for each increase in one standard deviation in HSPS, we can expect a proportional increase of 0.422 standard deviations in BAI scores ($\beta$ = 0.422, CI~95%~[0.276, 0.562], pd = 1.00, ps = 1.00, ROPE = 0.00, BF = 5261). On the other hand, the effect exerted by the seasonality attribuited to the study design provided strong evidence in favor of the null effect (BF = 0.08), suggesting that the seasonality did not have an influence on modifying this relationship between HSPS and BAI (See table 1).
+
+```{r}
+m_1 <- readRDS(file = "../models/m_1_fit.RDS")
+
+readRDS("../models/m_1_results.RDS") |> 
+  knitr::kable() |> 
+  kableExtra::kable_minimal()
+```
+Table 2. Effect of HSPS on BAI scores, adjusting for the effect of seasonality and within-subject correlations.
+
+<!---- EFFECT OF BAI ON HRV ---->
+
+## Anxiety on HRV parameters
+
+When assessing the influence of BAI scores on the different measures of HRV we observe the following: In time domains, we observed strong and moderate evidence in favor of the null effect, suggesting that BAI scores did not influence neither RMSSD (BF = 0.046) nor SDNN (BF = 0.200). For frequency domains we observed strong to very strong evidence in favor of the null effect, similar to the findings in time domains, for HF (BF = 0.070), LF (BF = 0.032) and VFL (BF = 0.038). 
+
+```{r}
+m_2 <- readRDS(file = "../models/m_2_fit.RDS")
+
+readRDS("../models/m_2_results.RDS") |> 
+  knitr::kable() |> 
+  kableExtra::kable_minimal()
+```
+
+<!---- EFFECT OF HSPS ON BAI-HRV ---->
+
+## High Sensitivity on the Anxiety-HRV crosstalk
+
+When examining the effect of HSPS on the BAI-HRV relationship, we observed that after considering the marginal effect of high sensitivity profile on the influence of BAI scores
+
+```{r}
+m_3 <- readRDS(file = "../models/m_2_fit.RDS")
+
+readRDS("../models/m_3_results.RDS") |> 
+  knitr::kable() |> 
+  kableExtra::kable_minimal()
+```
