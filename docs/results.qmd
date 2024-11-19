@@ -102,7 +102,7 @@ readRDS("../models/m_2_results.RDS") |>
 
 ## High Sensitivity on the Anxiety-HRV crosstalk
 
-When examining the effect of HSPS on the BAI-HRV relationship, we observed that after considering the marginal effect of high sensitivity profile on the influence of BAI scores
+When examining the effect of HSPS on the BAI-HRV relationship, we observed that after considering the marginal effect of high sensitivity profile on the influence of BAI scores, the aforementioned effects are practically irrelevant.
 
 ```{r}
 m_3 <- readRDS(file = "../models/m_2_fit.RDS")
