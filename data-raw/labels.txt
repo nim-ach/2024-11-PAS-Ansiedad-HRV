@@ -106,7 +106,7 @@ stress_ndex_post
 sd2_post
 sns_ndex_post
 sdnn_post
-vlf_ms2_post
-lf_ms2_post
-hf_ms2_post
+vlf_post
+lf_post
+hf_post
 hrv_tm2_f3f4_complete

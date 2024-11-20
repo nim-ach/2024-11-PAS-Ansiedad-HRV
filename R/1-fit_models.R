@@ -102,5 +102,36 @@ m_3_fit <- brm(
   file = "models/m_3_fit.RDS"
 )
 
+## Model 4: ∆HRV ~ N(BAI + PAS + Covariables) ----
+
+### Prepare model
+m_4_formula <- bf(
+  mvbind(rmssd_delta, sdnn_delta, hf_delta, lf_delta, vlf_delta,
+         pns_ndex_delta, sns_ndex_delta, stress_ndex_delta) ~ 1 +
+    bai_score + hsps_score + trial_phase +
+    (1|id)
+) + set_rescor(TRUE)
+
+### Prepare priors
+get_prior(m_4_formula, m_data)
+m_4_prior <-
+  set_prior("normal(0,3)", class = "b", resp = c("rmssddelta", "sdnndelta", "hfdelta", "lfdelta", "vlfdelta", "pnsndexdelta", "snsndexdelta", "stressndexdelta")) +
+  set_prior("normal(0,3)", class = "sd", resp = c("rmssddelta", "sdnndelta", "hfdelta", "lfdelta", "vlfdelta", "pnsndexdelta", "snsndexdelta", "stressndexdelta"), lb = 0) +
+  set_prior("normal(0,3)", class = "sigma", resp = c("rmssddelta", "sdnndelta", "hfdelta", "lfdelta", "vlfdelta", "pnsndexdelta", "snsndexdelta", "stressndexdelta"), lb = 0)
+
+### Fit model
+m_4_fit <- brm(
+  formula = m_4_formula,
+  data = m_data,
+  family = gaussian(),
+  prior = m_4_prior,
+  seed = 1234,
+  chains = 4, cores = 4,
+  iter = 5000, warmup = 2500,
+  control = list(adapt_delta = .99,
+                 max_treedepth = 50),
+  file = "models/m_4_fit.RDS"
+)
+
 
 

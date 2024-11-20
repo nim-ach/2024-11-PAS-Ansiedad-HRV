@@ -111,6 +111,17 @@ pas_data[, `:=`(
     ordered = TRUE)
 )]
 
+pas_data[, `:=`(
+  rmssd_delta = rmssd_post - rmssd_pre,
+  sdnn_delta = sdnn_post - sdnn_pre,
+  hf_delta = hf_post - hf_pre,
+  lf_delta = lf_post - lf_pre,
+  vlf_delta = vlf_post - vlf_pre,
+  sns_ndex_delta = sns_ndex_post - sns_ndex_pre,
+  stress_ndex_delta = stress_ndex_post - stress_ndex_pre,
+  pns_ndex_delta = pns_ndex_post - pns_ndex_pre
+)][]
+
 # Save the data -----------------------------------------------------------
 
 save(pas_data, file = "data/pas_data.RData")

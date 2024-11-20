@@ -66,7 +66,7 @@ The sample, composed of 124 subjects (age, 71.1 ± 6.1 years old), with 39 males
 gtsummary::tbl_summary(pas_data[, -c("id")], by = trial_phase, missing = "no",
                        statistic = list(all_continuous() ~ "{mean} ± {sd}"))
 ```
-Table 1. Sample characteristics.
+**Table 1**. Sample characteristics.
 
 
 <!---- EFFECT OF HSPS ON BAI ---->
@@ -82,13 +82,13 @@ readRDS("../models/m_1_results.RDS") |>
   knitr::kable() |> 
   kableExtra::kable_minimal()
 ```
-Table 2. Effect of HSPS on BAI scores, adjusting for the effect of seasonality and within-subject correlations.
+**Table 2**. Effect of HSPS on BAI scores, adjusting for the effect of seasonality and within-subject correlations.
 
 <!---- EFFECT OF BAI ON HRV ---->
 
 ## Anxiety on HRV parameters
 
-When assessing the influence of BAI scores on the different measures of HRV we observe the following: In time domains, we observed strong and moderate evidence in favor of the null effect, suggesting that BAI scores did not influence neither RMSSD (BF = 0.046) nor SDNN (BF = 0.200). For frequency domains we observed strong to very strong evidence in favor of the null effect, similar to the findings in time domains, for HF (BF = 0.070), LF (BF = 0.032) and VFL (BF = 0.038). 
+When assessing the influence of BAI scores on the different measures of HRV we observe the following: In time domains, we observed strong and moderate evidence in favor of the null effect, suggesting that BAI scores did not influence neither RMSSD (BF = 0.046) nor SDNN (BF = 0.200). For frequency domains we observed strong to very strong evidence in favor of the null effect, similar to the findings in time domains, for HF (BF = 0.070), LF (BF = 0.032) and VFL (BF = 0.038), see table 3. 
 
 ```{r}
 m_2 <- readRDS(file = "../models/m_2_fit.RDS")
@@ -97,17 +97,32 @@ readRDS("../models/m_2_results.RDS") |>
   knitr::kable() |> 
   kableExtra::kable_minimal()
 ```
+**Table 3**. Effect of BAI scores on HRV measurements, adjusting for the effect of seasonality and within-subject correlations.
 
 <!---- EFFECT OF HSPS ON BAI-HRV ---->
 
 ## High Sensitivity on the Anxiety-HRV crosstalk
 
-When examining the effect of HSPS on the BAI-HRV relationship, we observed that after considering the marginal effect of high sensitivity profile on the influence of BAI scores, the aforementioned effects are practically irrelevant.
+When examining the effect of HSPS on the BAI-HRV relationship, we observed that after considering the marginal effect of high sensitivity profile on the influence of BAI scores, the aforementioned effects are practically irrelevant (see table 4).
 
 ```{r}
-m_3 <- readRDS(file = "../models/m_2_fit.RDS")
+m_3 <- readRDS(file = "../models/m_3_fit.RDS")
 
 readRDS("../models/m_3_results.RDS") |> 
   knitr::kable() |> 
   kableExtra::kable_minimal()
 ```
+**Table 4**. Effect of BAI and HSPS scores on HRV measurements, adjusting for the effect of seasonality and within-subject correlations.
+
+## HSPS and BAI on HRV response to exercise
+
+When examining the effect of HSPS and BAI on the HRV response to exercise (delta analysis), neither of HSPS or BAI scores exerted a significant effect on any of the HRV domains in response to exercise (see table 5).
+
+```{r}
+m_4 <- readRDS(file = "../models/m_4_fit.RDS")
+
+readRDS("../models/m_4_results.RDS") |> 
+  knitr::kable() |> 
+  kableExtra::kable_minimal()
+```
+**Table 5**. Effect of BAI and HSPS scores on HRV response to exercise, adjusting for the effect of seasonality and within-subject correlations.
