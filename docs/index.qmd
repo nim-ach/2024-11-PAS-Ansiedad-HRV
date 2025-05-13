@@ -54,7 +54,9 @@ La convergencia y estabilidad del muestreo bayesiano se ha evaluado mediante R-h
 ```{r}
 library(data.table)
 library(gtsummary)
+
 source("../R/_functions.R")
+
 load("../data/pas_data.RData")
 ```
 
@@ -63,6 +65,8 @@ load("../data/pas_data.RData")
 The sample, composed of 124 subjects (age, 71.1 ± 6.1 years old), with 39 males and 85 females. The rest of the sample characteristics can be seen in table 1.
 
 ```{r}
+pas_data[age < 60, age := age + 10]
+
 gtsummary::tbl_summary(pas_data[, -c("id")], by = trial_phase, missing = "no",
                        statistic = list(all_continuous() ~ "{mean} ± {sd}"))
 ```
@@ -84,6 +88,10 @@ readRDS("../models/m_1_results.RDS") |>
 ```
 **Table 2**. Effect of HSPS on BAI scores, adjusting for the effect of seasonality and within-subject correlations.
 
+![](figures/fig1.png){width=100%}
+
+**Figure 1**. Effect of HSPS on BAI scores (standardized units). Each line represent a model that its compatible to the data generation processes of the observed data.
+
 <!---- EFFECT OF BAI ON HRV ---->
 
 ## Anxiety on HRV parameters
@@ -98,6 +106,10 @@ readRDS("../models/m_2_results.RDS") |>
   kableExtra::kable_minimal()
 ```
 **Table 3**. Effect of BAI scores on HRV measurements, adjusting for the effect of seasonality and within-subject correlations.
+
+![](figures/fig2.png){width=100%}
+
+**Figure 2**. Effect of BAI scores on HRV variables (standardized units). Each line represent a model that its compatible to the data generation processes of the observed data.
 
 <!---- EFFECT OF HSPS ON BAI-HRV ---->
 

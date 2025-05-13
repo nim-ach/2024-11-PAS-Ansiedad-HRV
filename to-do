@@ -1,10 +1,4 @@
-Plan Análisis
+Gráficos para Diego
 
-(Modelo 1) BAI ~ N(PAS + Covariables)
-PAS influye sobre el estado ansioso
-
-(Modelo 2) HRV ~ N(BAI + Covariables)
-BAI influye sobre la modulación autonómica cardíaca
-
-(Modelo 3) HRV ~ N(BAI + PAS + Covariables)
-PAS influye de manera indirecta a la modulación autonómica cardíaca al influir sobre el efecto de la ansiedad
+ - [ ] Figura 1. Ansiedad en HSPS
+ - [ ] Figura 2. Ansiedad en los parámetros de HRV con cada parámetro de HRV en paneles.
